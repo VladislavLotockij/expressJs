@@ -1,23 +1,28 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel.js");
 
-const registerUser = async ({ userName, email, password }) => {
+const registerUser = async ({ username, email, password }) => {
+  // userName -> username
   try {
-    const existingUserService = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       throw new Error("User already exists");
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = new User({
-      userName,
+      username, // Здесь также username
       email,
-      password,
+      password: hashedPassword,
     });
 
     await newUser.save();
     return newUser;
   } catch (e) {
-    throw new Error(e.message || "Server dont working");
+    throw new Error(e.message || "Server is not working");
   }
 };
+
+module.exports = { registerUser };
