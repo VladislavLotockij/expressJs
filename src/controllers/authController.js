@@ -40,12 +40,11 @@ const loginUserController = async (req, res) => {
 
     // Генерация JWT токена
     const token = jwt.sign(
-      { userId: user._id, username: user.username }, // Данные, которые хочешь включить в токен
-      process.env.JWT_SECRET, // Секретный ключ для подписи токена
-      { expiresIn: "1h" } // Время действия токена
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
     );
 
-    // Отправляем токен в ответе
     res.status(200).json({
       message: "Login successful",
       token: token,
