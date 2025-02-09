@@ -1,18 +1,18 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddlerware = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
+  const token = req.header("Authorization"?.replace("Bearer ", ""));
 
   if (!token) {
-    return res.status(401).json({ message: "No token, authorization denied" });
+    return res.status(401).json({ message: "Acces denied" });
   }
 
   try {
-    const decoded = jwt.verify(token, "your_jwt_secret");
-    req.user = decoded;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // В decoded будет содержаться userId
     next();
   } catch (error) {
-    res.status(401).json({ message: "Toke is not valid" });
+    res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 module.exports = authMiddlerware;

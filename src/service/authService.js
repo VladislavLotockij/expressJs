@@ -25,4 +25,26 @@ const registerUser = async ({ username, email, password }) => {
   }
 };
 
-module.exports = { registerUser };
+const loginUserService = async (email, password) => {
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("Invalid email");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      throw new Error("Invalid password");
+    }
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    return { token, user };
+  } catch (error) {
+    throw new Error(error.message || "Server is not working");
+  }
+};
+
+module.exports = { registerUser, loginUserService };
