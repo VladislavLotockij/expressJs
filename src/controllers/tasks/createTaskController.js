@@ -4,11 +4,11 @@ const createTaskController = async (req, res) => {
   const { title, description } = req.body;
 
   try {
-    const createdTask = await createTaskService(
+    const createdTask = await createTaskService({
       title,
       description,
-      req.user._id
-    );
+      userID: req.user._id,
+    });
 
     if (!createdTask) {
       return res.status(400).json({ message: "Title is required" });
